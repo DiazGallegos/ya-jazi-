@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block titulo %}Ventas | Librería Django{% endblock %}
+
+{% block contenido %}
+<div class="page-header">
+    <h2>💰 Gestión de Ventas</h2>
+    <a href="{% url 'app_libreria:crear_venta' %}" class="btn btn-primary">🛒 Registrar Venta</a>
+</div>
+
+<div class="stats-bar">
+    <div class="stat-item">
+        <span class="stat-label">Total Ventas:</span>
+        <span class="stat-value">{{ total_ventas }}</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-label">Ventas Hoy:</span>
+        <span class="stat-value">{{ ventas_hoy }}</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-label">Ingresos Totales:</span>
+        <span class="stat-value">€{{ ingresos_totales|floatformat:2 }}</span>
+    </div>
+</div>
+
+<div class="table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID Venta</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Monto Total</th>
+                <th>Descuento</th>
+                <th>Monto Final</th>
+                <th>Método Pago</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venta in ventas %}
+            <tr>
+                <td>{{ venta.ventaid }}</td>
+                <td>
+                    <a href="{% url 'app_libreria:detalle_cliente' venta.cliente.clienteid %}">
+                        {{ venta.cliente.nombre_completo }}
+                    </a>
+                </td>
+                <td>{{ venta.fechaventa|date:"d/m/Y H:i" }}</td>
+                <td>€{{ venta.montototal|floatformat:2 }}</td>
+                <td>{{ venta.descuentoAplicado }}%</td>
+                <td><strong>€{{ venta.monto_final|floatformat:2 }}</strong></td>
+                <td>
+                    <span class="payment-method">{{ venta.get_metodopago_display }}</span>
+                </td>
+                <td>
+                    <span class="status status-{{ venta.estadoVenta }}">{{ venta.get_estadoVenta_display }}</span>
+                </td>
+                <td class="actions">
+                    <a href="{% url 'app_libreria:detalle_venta' venta.ventaid %}" class="btn btn-small">👁️</a>
+                    <a href="{% url 'app_libreria:editar_venta' venta.ventaid %}" class="btn btn-small btn-secondary">✏️</a>
+                    <a href="{% url 'app_libreria:borrar_venta' venta.ventaid %}" class="btn btn-small btn-danger">🗑️</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9" class="no-items">No hay ventas registradas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

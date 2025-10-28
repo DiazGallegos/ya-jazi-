@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ cliente.nombre_completo }} | Librería Django{% endblock %}
+
+{% block contenido %}
+<article class="detail-container">
+    <div class="detail-header">
+        <div class="client-avatar">
+            {% if cliente.foto_cliente %}
+                <img src="{{ cliente.foto_cliente.url }}" alt="Foto de {{ cliente.nombre_completo }}" class="client-detail-photo">
+            {% else %}
+                <div class="client-detail-placeholder">👤</div>
+            {% endif %}
+        </div>
+        <div class="client-info">
+            <h1>{{ cliente.nombre_completo }}</h1>
+            <p class="client-email">📧 {{ cliente.email }}</p>
+            <p class="client-phone">📞 {{ cliente.telefono|default:"No especificado" }}</p>
+            <p class="client-genre">📖 Género Preferido: <strong>{{ cliente.get_preferenciasgenero_display }}</strong></p>
+        </div>
+    </div>
+
+    <div class="client-stats">
+        <div class="stat-card small">
+            <h3>Total Compras</h3>
+            <span class="stat-number">{{ total_ventas }}</span>
+        </div>
+        <div class="stat-card small">
+            <h3>Total Gastado</h3>
+            <span class="stat-number">€{{ total_gastado|floatformat:2 }}</span>
+        </div>
+        <div class="stat-card small">
+            <h3>Promedio por Compra</h3>
+            <span class="stat-number">€{{ promedio_compra|floatformat:2 }}</span>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <h3>📋 Información de Contacto</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <strong>Dirección:</strong>
+                <span>{{ cliente.direccion|default:"No especificada" }}</span>
+            </div>
+            <div class="info-item">
+                <strong>Fecha de Registro:</strong>
+                <span>{{ cliente.fecharegistro|date:"d/m/Y H:i" }}</span>
+            </div>
+            <div class="info-item">
+                <strong>Preferencias Literarias:</strong>
+                <span class="genre-tag large">{{ cliente.get_preferenciasgenero_display }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-actions">
+        <a href="{% url 'app_libreria:editar_cliente' cliente.clienteid %}" class="btn btn-secondary">✏️ Editar Cliente</a>
+        <a href="{% url 'app_libreria:borrar_cliente' cliente.clienteid %}" class="btn btn-danger">🗑️ Eliminar Cliente</a>
+        <a href="{% url 'app_libreria:crear_venta' %}" class="btn btn-primary">🛒 Nueva Venta para este Cliente</a>
+    </div>
+
+    <div class="detail-section">
+        <h3>🛒 Historial de Compras</h3>
+        {% if ventas_cliente %}
+        <div class="sales-history">
+            {% for venta in ventas_cliente %}
+            <div class="sale-item">
+                <a href="{% url 'app_libreria:detalle_venta' venta.ventaid %}">
+                    <div class="sale-header">
+                        <strong>Venta #{{ venta.ventaid }}</strong>
+                        <span class="sale-date">{{ venta.fechaventa|date:"d/m/Y H:i" }}</span>
+                    </div>
+                    <div class="sale-details">
+                        <span class="sale-amount">€{{ venta.monto_final|floatformat:2 }}</span>
+                        <span class="sale-method">{{ venta.get_metodopago_display }}</span>
+                        <span class="status status-{{ venta.estadoVenta }}">{{ venta.get_estadoVenta_display }}</span>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="no-items">Este cliente no tiene compras registradas.</p>
+        {% endif %}
+    </div>
+</article>
+{% endblock %}

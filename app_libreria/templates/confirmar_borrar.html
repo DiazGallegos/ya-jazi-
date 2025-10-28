@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block titulo %}Eliminar {{ tipo|title }} | Librería Django{% endblock %}
+
+{% block contenido %}
+<div class="confirmation-container">
+    <h2>¿Estás seguro de que quieres borrar 
+    {% if tipo == 'cliente' %}
+        al cliente "{{ objeto.nombre_completo }}"?
+    {% else %}
+        la venta #{{ objeto.ventaid }} de {{ objeto.cliente.nombre_completo }}?
+    {% endif %}
+    </h2>
+    <p class="warning-message">⚠️ Esta acción no se puede deshacer.</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="actions">
+            <button type="submit" class="btn btn-danger">Sí, Borrar</button>
+            {% if tipo == 'cliente' %}
+            <a href="{% url 'app_libreria:detalle_cliente' objeto.clienteid %}" class="btn">Cancelar</a>
+            {% else %}
+            <a href="{% url 'app_libreria:detalle_venta' objeto.ventaid %}" class="btn">Cancelar</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}

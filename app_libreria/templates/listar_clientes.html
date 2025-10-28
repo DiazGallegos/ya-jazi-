@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block titulo %}Clientes | Librería Django{% endblock %}
+
+{% block contenido %}
+<div class="page-header">
+    <h2>👥 Gestión de Clientes</h2>
+    <a href="{% url 'app_libreria:crear_cliente' %}" class="btn btn-primary">➕ Registrar Cliente</a>
+</div>
+
+<div class="stats-bar">
+    <div class="stat-item">
+        <span class="stat-label">Total Clientes:</span>
+        <span class="stat-value">{{ total_clientes }}</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-label">Clientes Nuevos (30 días):</span>
+        <span class="stat-value">{{ clientes_recientes }}</span>
+    </div>
+</div>
+
+<div class="clients-grid">
+    {% for cliente in clientes %}
+    <div class="client-card">
+        <a href="{% url 'app_libreria:detalle_cliente' cliente.clienteid %}">
+            {% if cliente.foto_cliente %}
+                <img src="{{ cliente.foto_cliente.url }}" alt="Foto de {{ cliente.nombre_completo }}" class="client-photo">
+            {% else %}
+                <div class="client-photo-placeholder">👤</div>
+            {% endif %}
+            <div class="client-info">
+                <h3>{{ cliente.nombre_completo }}</h3>
+                <p class="client-email">📧 {{ cliente.email }}</p>
+                <p class="client-phone">📞 {{ cliente.telefono|default:"No especificado" }}</p>
+                <p class="client-genre">📖 {{ cliente.get_preferenciasgenero_display }}</p>
+                <p class="client-date">📅 Registro: {{ cliente.fecharegistro|date:"d/m/Y" }}</p>
+            </div>
+        </a>
+        <div class="client-actions">
+            <a href="{% url 'app_libreria:editar_cliente' cliente.clienteid %}" class="btn btn-small btn-secondary">✏️ Editar</a>
+            <a href="{% url 'app_libreria:borrar_cliente' cliente.clienteid %}" class="btn btn-small btn-danger">🗑️ Eliminar</a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="no-items">
+        <p>No hay clientes registrados.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

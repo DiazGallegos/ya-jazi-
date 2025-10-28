@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ titulo }} | Librería Django{% endblock %}
+
+{% block contenido %}
+<div class="form-container">
+    <h2>{{ titulo }}</h2>
+    <form method="post" class="form-styled">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">Guardar Venta</button>
+            <a href="{% url 'app_libreria:listar_ventas' %}" class="btn">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

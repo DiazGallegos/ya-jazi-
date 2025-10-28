@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block titulo %}Dashboard | Librería Django{% endblock %}
+
+{% block contenido %}
+<div class="dashboard">
+    <h2>📊 Dashboard</h2>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-info">
+                <h3>Total Clientes</h3>
+                <span class="stat-number">{{ total_clientes }}</span>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-info">
+                <h3>Total Ventas</h3>
+                <span class="stat-number">{{ total_ventas }}</span>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">💵</div>
+            <div class="stat-info">
+                <h3>Ingresos Totales</h3>
+                <span class="stat-number">€{{ ingresos_totales|floatformat:2 }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-sections">
+        <section class="recent-section">
+            <h3>🛒 Ventas Recientes</h3>
+            {% if ventas_recientes %}
+            <div class="recent-list">
+                {% for venta in ventas_recientes %}
+                <div class="recent-item">
+                    <a href="{% url 'app_libreria:detalle_venta' venta.ventaid %}">
+                        <strong>Venta #{{ venta.ventaid }}</strong>
+                        <span>{{ venta.cliente.nombre_completo }}</span>
+                        <span class="amount">€{{ venta.monto_final|floatformat:2 }}</span>
+                        <span class="status status-{{ venta.estadoVenta }}">{{ venta.get_estadoVenta_display }}</span>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="no-items">No hay ventas recientes.</p>
+            {% endif %}
+            <a href="{% url 'app_libreria:listar_ventas' %}" class="btn btn-secondary">Ver Todas las Ventas</a>
+        </section>
+
+        <section class="recent-section">
+            <h3>👥 Clientes Recientes</h3>
+            {% if clientes_recientes %}
+            <div class="recent-list">
+                {% for cliente in clientes_recientes %}
+                <div class="recent-item">
+                    <a href="{% url 'app_libreria:detalle_cliente' cliente.clienteid %}">
+                        <strong>{{ cliente.nombre_completo }}</strong>
+                        <span>{{ cliente.email }}</span>
+                        <span class="genre">{{ cliente.get_preferenciasgenero_display }}</span>
+                        <span class="date">{{ cliente.fecharegistro|date:"d/m/Y" }}</span>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="no-items">No hay clientes registrados.</p>
+            {% endif %}
+            <a href="{% url 'app_libreria:listar_clientes' %}" class="btn btn-secondary">Ver Todos los Clientes</a>
+        </section>
+    </div>
+</div>
+{% endblock %}

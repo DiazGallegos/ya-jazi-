@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block titulo %}Venta #{{ venta.ventaid }} | Librería Django{% endblock %}
+
+{% block contenido %}
+<article class="detail-container">
+    <div class="sale-header-detail">
+        <h1>🛒 Venta #{{ venta.ventaid }}</h1>
+        <div class="sale-status">
+            <span class="status status-{{ venta.estadoVenta }} large">{{ venta.get_estadoVenta_display }}</span>
+        </div>
+    </div>
+
+    <div class="sale-info-grid">
+        <div class="info-card">
+            <h3>👤 Cliente</h3>
+            <div class="client-link">
+                <a href="{% url 'app_libreria:detalle_cliente' venta.cliente.clienteid %}">
+                    {{ venta.cliente.nombre_completo }}
+                </a>
+            </div>
+            <p>{{ venta.cliente.email }}</p>
+        </div>
+
+        <div class="info-card">
+            <h3>💰 Información de Pago</h3>
+            <div class="amount-details">
+                <div class="amount-line">
+                    <span>Monto Total:</span>
+                    <span>€{{ venta.montototal|floatformat:2 }}</span>
+                </div>
+                <div class="amount-line discount">
+                    <span>Descuento ({{ venta.descuentoAplicado }}%):</span>
+                    <span>-€{{ (venta.montototal * venta.descuentoAplicado / 100)|floatformat:2 }}</span>
+                </div>
+                <div class="amount-line total">
+                    <span><strong>Monto Final:</strong></span>
+                    <span><strong>€{{ venta.monto_final|floatformat:2 }}</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h3>📋 Detalles de la Venta</h3>
+            <div class="detail-item">
+                <strong>Método de Pago:</strong>
+                <span class="payment-method">{{ venta.get_metodopago_display }}</span>
+            </div>
+            <div class="detail-item">
+                <strong>Fecha y Hora:</strong>
+                <span>{{ venta.fechaventa|date:"d/m/Y H:i" }}</span>
+            </div>
+            <div class="detail-item">
+                <strong>Estado:</strong>
+                <span class="status status-{{ venta.estadoVenta }}">{{ venta.get_estadoVenta_display }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-actions">
+        <a href="{% url 'app_libreria:editar_venta' venta.ventaid %}" class="btn btn-secondary">✏️ Editar Venta</a>
+        <a href="{% url 'app_libreria:borrar_venta' venta.ventaid %}" class="btn btn-danger">🗑️ Eliminar Venta</a>
+        <a href="{% url 'app_libreria:listar_ventas' %}" class="btn">📋 Volver a Ventas</a>
+    </div>
+</article>
+{% endblock %}

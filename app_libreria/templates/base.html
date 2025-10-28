@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}Librería Django{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="wrapper">
+        <header class="main-header">
+            <h1><a href="{% url 'app_libreria:dashboard' %}">📚 Librería Django</a></h1>
+            <nav class="main-nav">
+                <a href="{% url 'app_libreria:dashboard' %}">📊 Dashboard</a>
+                <a href="{% url 'app_libreria:listar_clientes' %}">👥 Clientes</a>
+                <a href="{% url 'app_libreria:listar_ventas' %}">💰 Ventas</a>
+                <a href="{% url 'app_libreria:crear_cliente' %}">➕ Nuevo Cliente</a>
+                <a href="{% url 'app_libreria:crear_venta' %}">🛒 Nueva Venta</a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            {% block contenido %}{% endblock %}
+        </main>
+
+        <footer class="main-footer">
+            <p>© 2025 Librería Django - Sistema de Gestión de Librería</p>
+        </footer>
+    </div>
+</body>
+</html>
